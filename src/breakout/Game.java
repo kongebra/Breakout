@@ -157,7 +157,7 @@ public class Game {
 				for (Brick brick : bricks) {
 					if (ball.intersects(brick.getBoundsInLocal())) {
 						
-						if (ball.getCenterY() - ball.getRadius() > brick.getLayoutY() + brick.getHeight()) {
+						if (ball.getCenterY() - ball.getRadius() >= brick.getLayoutY() + brick.getHeight()) {
 							ball.reverseDY();
 						} else if (ball.getCenterY() + ball.getRadius() < brick.getLayoutY()) {
 							ball.reverseDY();
