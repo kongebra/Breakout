@@ -28,8 +28,9 @@ public class Game {
 	
 	private int livesLeft = 3;
 	
-	public Game(String title, double width, double height) {
+	public Game(String title, double width, double height, Stage stage) {
 		this.title = title;
+		this.stage = stage;
 		Game.width = width;
 		Game.height = height;
 		
@@ -276,8 +277,5 @@ public class Game {
 	public static double getHeight() {
 		return height;
 	}
-
-	public void setStage(Stage stage) {
-		this.stage = stage;
-	}
+	
 }

@@ -9,8 +9,7 @@ public class Main extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		game = new Game("Breakout", 800, 600);
-		game.setStage(primaryStage);
+		game = new Game("Breakout", 800, 600, primaryStage);
 		game.init();
 	}
 	
