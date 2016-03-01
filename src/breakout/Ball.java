@@ -49,4 +49,8 @@ public class Ball extends Circle {
 		return dy;
 	}
 	
+	public double getDX() {
+		return dx;
+	}
+	
 }
