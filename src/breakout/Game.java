@@ -6,8 +6,11 @@ import javafx.animation.AnimationTimer;
 import javafx.animation.Timeline;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class Game {
@@ -21,7 +24,9 @@ public class Game {
 	private double brickWidth;
 	private double brickHeight;
 	private String title;
-	private boolean clicked = false;
+	private boolean clicked;
+	
+	private int livesLeft = 3;
 	
 	public Game(String title, double width, double height) {
 		this.title = title;
@@ -32,6 +37,7 @@ public class Game {
 		brickHeight = brickWidth / 2.5;
 	}
 	
+	private Stage stage;
 	private Pane root;
 	private Scene scene;
 	
@@ -44,8 +50,19 @@ public class Game {
 	
 	private Button newGameButton;
 	
-	public void init(Stage stage) {
+	private ArrayList<Circle> lives;
+	private Label livesLabel;
+	
+	private int score;
+	private Label scoreLabel;
+	
+	public void init() {
 		
+		// Settings
+		clicked = false;
+		score = 0;
+		
+		// Scene settings
 		root = new Pane();
 		scene = new Scene(root, width, height);
 		
@@ -57,7 +74,7 @@ public class Game {
 		// Ball
 		ball = new Ball(10);
 		ball.setCenterX(racket.getX() + racket.getHalfWidth());
-		ball.setCenterY(racket.getY() - racket.getHeight() * 2);
+		ball.setCenterY(racket.getY() - racket.getHeight() * 1.2);
 		
 		// Bricks
 		bricks = new ArrayList<Brick>();
@@ -65,20 +82,31 @@ public class Game {
 		
 		// Buttons
 		newGameButton = new Button("New Game");
-		newGameButton.setLayoutY(height - 30);
-		newGameButton.setLayoutX(5);
+		newGameButton.setLayoutY(3);
+		newGameButton.setLayoutX(width / 2 - 50);
 		newGameButton.setOnAction(e -> {
-			clicked = false;
-			timeline.stop();
-			timer.stop();
-			this.init(stage);
+			this.newGame();
 		});
+		
+		// Lives
+		lives = new ArrayList<Circle>();
+		livesLabel = new Label("Lives:");
+		fixLives();
+		
+		// Score
+		scoreLabel = new Label("Score: 0");
+		scoreLabel.setTextFill(Color.WHITE);
+		scoreLabel.setFont(new Font(24));
+		scoreLabel.setLayoutX(5);
 		
 		// Add too ROOT
 		root.getChildren().add(racket);
 		root.getChildren().add(ball);
 		root.getChildren().addAll(bricks);
 		root.getChildren().add(newGameButton);
+		root.getChildren().add(livesLabel);
+		root.getChildren().add(scoreLabel);
+		root.getChildren().addAll(lives);
 		
 		// ActionEvents
 		root.setOnMouseMoved(e -> {
@@ -121,17 +149,75 @@ public class Game {
 					racket.bounceBall(ball);
 				}
 				
-//				for (Brick brick : bricks) {
-//					if (brick.collision(ball)) {
-//						bricks.remove(brick);
-//					}
-//					break;
-//				}
+				if (ball.lost()) {
+					looseLife();
+				}
+				
+				for (Brick brick : bricks) {
+					if (ball.intersects(brick.getBoundsInLocal())) {
+						
+						if (ball.getCenterY() - ball.getRadius() > brick.getLayoutY() + brick.getHeight()) {
+							ball.reverseDY();
+						} else if (ball.getCenterY() + ball.getRadius() < brick.getLayoutY()) {
+							ball.reverseDY();
+						} else if (ball.getCenterX() + ball.getRadius() < brick.getLayoutX()) {
+							ball.reverseDX();
+						} else if (ball.getCenterX() - ball.getRadius() >= brick.getLayoutX() + brick.getWidth()) {
+							ball.reverseDX();
+						}
+						
+						root.getChildren().remove(brick);
+						brick.setX(-100);
+						score++;
+						scoreLabel.setText("Score: " + score);
+					}
+				}
+				
 			}
 		};
 		
 		timeline.play();
 		timer.start();
+	}
+	
+	private void newGame() {
+		clicked = false;
+		this.init();
+	}
+	
+	private void resumeGame() {
+		clicked = false;
+		timeline.play();
+		timer.start();
+		ball.setCenterX(racket.getX() + racket.getHalfWidth());
+		ball.setCenterY(racket.getY() - racket.getHeight() * 1.2);
+		root.getChildren().removeAll(lives);
+		fixLives();
+	}
+	
+	public void looseLife() {
+		this.timer.stop();
+		this.timeline.stop();
+		this.livesLeft--;
+		if (this.livesLeft != 0) {
+			Button btn = new Button("Resume");
+			btn.setLayoutX(width / 2 - 45);
+			btn.setLayoutY(height / 2 - btn.getHeight());
+			root.getChildren().add(btn);
+			btn.setOnAction(e -> {
+				this.resumeGame();
+				root.getChildren().remove(btn);
+			});
+		} else {
+			Button btn = new Button("Restart");
+			btn.setLayoutX(width / 2 - 50);
+			btn.setLayoutY(height / 2 - btn.getHeight() / 2);
+			root.getChildren().add(btn);
+			btn.setOnAction(e -> {
+				this.livesLeft = 3;
+				this.newGame();
+			});
+		}
 	}
 	
 	private void initBricks() {
@@ -158,6 +244,29 @@ public class Game {
 			}
 			
 		}
+		
+		int count = 0;
+		while (count < (int)(bricks.size() * 0.2)) {
+			int rng = (int) (Math.random() * bricks.size());
+			if (bricks.get(rng).getX() > 0) {
+				bricks.get(rng).setX(-100);
+				count++;
+			}
+				
+		}
+	}
+	
+	private void fixLives() {
+		livesLabel.setTextFill(Color.WHITE);
+		livesLabel.setLayoutX(5);
+		livesLabel.setLayoutY(height - 19);
+		
+		for (int i = 0; i < livesLeft; i++) {
+			lives.add(new Circle(5, Color.WHITE));
+			lives.get(i).setCenterX(48 + i * 13);
+			lives.get(i).setCenterY(height - 10);
+		}
+		
 	}
 	
 	public static double getWidth() {
@@ -166,5 +275,9 @@ public class Game {
 	
 	public static double getHeight() {
 		return height;
+	}
+
+	public void setStage(Stage stage) {
+		this.stage = stage;
 	}
 }

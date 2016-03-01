@@ -9,8 +9,8 @@ public class Ball extends Circle {
 	
 	public Ball(double radius) {
 		super(radius);
-		dx = 5;
-		dy = 5;
+		dx = 4;
+		dy = 4;
 		this.setFill(Color.WHITE);
 	}
 	
@@ -24,10 +24,13 @@ public class Ball extends Circle {
 		if (this.getCenterY() - this.getRadius() <= 0) {
 			reverseDY();
 		}
+	}
+	
+	public boolean lost() {
 		if (this.getCenterY() >= Game.getHeight() - this.getRadius()) {
-			// Game Over / Life lost
+			return true;
 		}
-		
+		return false;
 	}
 	
 	public void reverseDX() {

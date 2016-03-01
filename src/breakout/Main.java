@@ -10,7 +10,8 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		game = new Game("Breakout", 800, 600);
-		game.init(primaryStage);
+		game.setStage(primaryStage);
+		game.init();
 	}
 	
 	public static void main(String[] args) {
