@@ -45,9 +45,9 @@ public class Brick extends Rectangle {
 		if (ball.contains(closestX, closestY))
 		{
 			//Compare sign on direction and relative position
-			if (Integer.signum(ballX - rectLeft) != Integer.signum((int)ball.getDX()))
+			if (Integer.signum(ballX - rectLeft) != Math.signum(ball.getDX()))
 				ball.reverseDX();
-			if (Integer.signum(ballY - rectTop) != Integer.signum((int)ball.getDY()))
+			if (Integer.signum(ballY - rectTop) != Math.signum(ball.getDY()))
 				ball.reverseDY();
 			return true;
 		}
