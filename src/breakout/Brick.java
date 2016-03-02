@@ -10,21 +10,29 @@ public class Brick extends Rectangle {
 	
 	public boolean collision(Ball ball)
 	{
+		int ballX = (int)ball.getCenterX();
+		int ballY = (int)ball.getCenterY();
+		int ballR = (int)ball.getRadius();
+		int rectLeft = (int)this.getX();
+		int rectRight = rectLeft + (int)this.getWidth();
+		int rectTop = (int)this.getY();
+		int rectBottom = rectTop + (int)this.getHeight();
+		
 		//Quick detection (square vs square)
-		if (ball.getCenterX() + ball.getRadius() < this.getX()
-				|| ball.getCenterX() - ball.getRadius() > this.getX() + this.getWidth()
-				|| ball.getCenterY() + ball.getRadius() < this.getY()
-				|| ball.getCenterY() - ball.getRadius() > this.getY() + this.getHeight())
+		if (ballX + ballR < rectLeft
+				|| ballX - ballR > rectRight
+				|| ballY + ballR < rectTop
+				|| ballY - ballR > rectBottom)
 			return false;
 		
 		//Brick center Y:
-		if (ball.getCenterY() > this.getY() && ball.getCenterY() < this.getY() + this.getHeight())
+		if (ballY >= rectTop && ballY <= rectBottom)
 		{
 			ball.reverseDX();
 			return true;
 		}
 		//Brick center X:
-		if (ball.getCenterX() > this.getX() && ball.getCenterX() < this.getX() + this.getWidth())
+		if (ballX >= rectLeft && ballX <= rectRight)
 		{
 			ball.reverseDY();
 			return true;
@@ -33,7 +41,7 @@ public class Brick extends Rectangle {
 		//New direction must be in corner direction
 		
 		//Upper left corner of brick
-		if (ball.contains(this.getX(), this.getY()))
+		if (ball.contains(rectLeft, rectTop))
 		{
 			if (ball.getDX() > 0) ball.reverseDX();
 			if (ball.getDY() > 0) ball.reverseDY();
@@ -41,7 +49,7 @@ public class Brick extends Rectangle {
 		}
 
 		//Upper right corner of brick
-		if (ball.contains(this.getX() + this.getWidth(), this.getY()))
+		if (ball.contains(rectRight, rectTop))
 		{
 			if (ball.getDX() < 0) ball.reverseDX();
 			if (ball.getDY() > 0) ball.reverseDY();
@@ -49,7 +57,7 @@ public class Brick extends Rectangle {
 		}
 
 		//Lower right corner of brick
-		if (ball.contains(this.getX() + this.getWidth(), this.getY() + this.getHeight()))
+		if (ball.contains(rectRight, rectBottom))
 		{
 			if (ball.getDX() < 0) ball.reverseDX();
 			if (ball.getDY() < 0) ball.reverseDY();
@@ -57,7 +65,7 @@ public class Brick extends Rectangle {
 		}
 
 		//Lower left corner of brick
-		if (ball.contains(this.getX(), this.getY() + this.getHeight()))
+		if (ball.contains(rectLeft, rectBottom))
 		{
 			if (ball.getDX() > 0) ball.reverseDX();
 			if (ball.getDY() < 0) ball.reverseDY();
