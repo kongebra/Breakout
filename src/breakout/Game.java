@@ -155,6 +155,14 @@ public class Game {
 				}
 				
 				for (Brick brick : bricks) {
+					if (brick.collision(ball)) {
+						root.getChildren().remove(brick);
+						brick.setX(-100);
+						score++;
+						scoreLabel.setText("Score: " + score);
+						break;
+					}
+					/*
 					if (ball.intersects(brick.getBoundsInLocal())) {
 						
 						if (ball.getCenterY() - ball.getRadius() >= brick.getLayoutY() + brick.getHeight()) {
@@ -172,6 +180,7 @@ public class Game {
 						score++;
 						scoreLabel.setText("Score: " + score);
 					}
+					*/
 				}
 				
 			}
