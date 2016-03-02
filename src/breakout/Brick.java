@@ -40,35 +40,15 @@ public class Brick extends Rectangle {
 		//Brick corner
 		//New direction must be in corner direction
 		
-		//Upper left corner of brick
-		if (ball.contains(rectLeft, rectTop))
+		int closestX = ballX < rectLeft ? rectLeft : rectRight;
+		int closestY = ballY < rectTop ? rectTop : rectBottom;
+		if (ball.contains(closestX, closestY))
 		{
-			if (ball.getDX() > 0) ball.reverseDX();
-			if (ball.getDY() > 0) ball.reverseDY();
-			return true;
-		}
-
-		//Upper right corner of brick
-		if (ball.contains(rectRight, rectTop))
-		{
-			if (ball.getDX() < 0) ball.reverseDX();
-			if (ball.getDY() > 0) ball.reverseDY();
-			return true;
-		}
-
-		//Lower right corner of brick
-		if (ball.contains(rectRight, rectBottom))
-		{
-			if (ball.getDX() < 0) ball.reverseDX();
-			if (ball.getDY() < 0) ball.reverseDY();
-			return true;
-		}
-
-		//Lower left corner of brick
-		if (ball.contains(rectLeft, rectBottom))
-		{
-			if (ball.getDX() > 0) ball.reverseDX();
-			if (ball.getDY() < 0) ball.reverseDY();
+			//Compare sign on direction and relative position
+			if (Integer.signum(ballX - rectLeft) != Integer.signum((int)ball.getDX()))
+				ball.reverseDX();
+			if (Integer.signum(ballY - rectTop) != Integer.signum((int)ball.getDY()))
+				ball.reverseDY();
 			return true;
 		}
 		return false;
