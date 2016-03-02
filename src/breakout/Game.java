@@ -60,7 +60,12 @@ public class Game {
 	
 	private int fps;
 	private Label fpsLabel;
+	private Label engineMicroSecondsLabel;
+	private Label drawMsLabel;
 	private int lastFpsTimer;
+	private long lastEngineStartNs;
+	private long lastEngineEnd;
+	private long lastEngineEndNs;
 
 	public void init() {
 		
@@ -113,7 +118,22 @@ public class Game {
 		fpsLabel.setLayoutX(200);
 		fps = 0;
 		lastFpsTimer = 0;
+		lastEngineStartNs = 0;
+		lastEngineEnd = 0;
+		lastEngineEndNs = 0;
 		
+		// Engine ms
+		engineMicroSecondsLabel = new Label("Engine µs: 0");
+		engineMicroSecondsLabel.setTextFill(Color.WHITE);
+		engineMicroSecondsLabel.setFont(new Font(24));
+		engineMicroSecondsLabel.setLayoutX(400);
+		
+		// Draw ms
+		drawMsLabel = new Label("Draw ms: 0");
+		drawMsLabel.setTextFill(Color.WHITE);
+		drawMsLabel.setFont(new Font(24));
+		drawMsLabel.setLayoutX(600);
+
 		// Add too ROOT
 		root.getChildren().add(racket);
 		root.getChildren().add(ball);
@@ -122,6 +142,8 @@ public class Game {
 		root.getChildren().add(livesLabel);
 		root.getChildren().add(scoreLabel);
 		root.getChildren().add(fpsLabel);
+		root.getChildren().add(engineMicroSecondsLabel);
+		root.getChildren().add(drawMsLabel);
 		root.getChildren().addAll(lives);
 		
 		// ActionEvents
@@ -158,13 +180,17 @@ public class Game {
 			@Override
 			public void handle(long now) {
 				fps++;
+				long mainLoopStart = System.currentTimeMillis();
 				int fpsTimer = (int)(System.currentTimeMillis() / 1000L);
 				if (fpsTimer != lastFpsTimer)
 				{
 					fpsLabel.setText("FPS: " + fps);
 					fps = 0;
 					lastFpsTimer = fpsTimer;
+					engineMicroSecondsLabel.setText("Engine µs: " + ((lastEngineEndNs - lastEngineStartNs) / 1000L));
+					drawMsLabel.setText("Draw ms: " + (mainLoopStart - lastEngineEnd));
 				}
+				lastEngineStartNs = System.nanoTime();
 				if (clicked) {
 					ball.move();
 				}
@@ -205,7 +231,8 @@ public class Game {
 					}
 					*/
 				}
-				
+				lastEngineEnd = System.currentTimeMillis();
+				lastEngineEndNs = System.nanoTime();
 			}
 		};
 		
