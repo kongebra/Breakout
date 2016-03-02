@@ -1,6 +1,7 @@
 package breakout;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import javafx.animation.AnimationTimer;
 import javafx.animation.Timeline;
@@ -57,6 +58,10 @@ public class Game {
 	private int score;
 	private Label scoreLabel;
 	
+	private int fps;
+	private Label fpsLabel;
+	private int lastFpsTimer;
+
 	public void init() {
 		
 		// Settings
@@ -80,6 +85,7 @@ public class Game {
 		// Bricks
 		bricks = new ArrayList<Brick>();
 		initBricks();
+		Brick.setFastCollDetArea((int)brickWidth, (int)brickHeight, ball);
 		
 		// Buttons
 		newGameButton = new Button("New Game");
@@ -100,6 +106,14 @@ public class Game {
 		scoreLabel.setFont(new Font(24));
 		scoreLabel.setLayoutX(5);
 		
+		// Frames pr second
+		fpsLabel = new Label("FPS: 0");
+		fpsLabel.setTextFill(Color.WHITE);
+		fpsLabel.setFont(new Font(24));
+		fpsLabel.setLayoutX(200);
+		fps = 0;
+		lastFpsTimer = 0;
+		
 		// Add too ROOT
 		root.getChildren().add(racket);
 		root.getChildren().add(ball);
@@ -107,6 +121,7 @@ public class Game {
 		root.getChildren().add(newGameButton);
 		root.getChildren().add(livesLabel);
 		root.getChildren().add(scoreLabel);
+		root.getChildren().add(fpsLabel);
 		root.getChildren().addAll(lives);
 		
 		// ActionEvents
@@ -142,6 +157,14 @@ public class Game {
 		timer = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
+				fps++;
+				int fpsTimer = (int)(System.currentTimeMillis() / 1000L);
+				if (fpsTimer != lastFpsTimer)
+				{
+					fpsLabel.setText("FPS: " + fps);
+					fps = 0;
+					lastFpsTimer = fpsTimer;
+				}
 				if (clicked) {
 					ball.move();
 				}
