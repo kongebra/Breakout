@@ -5,7 +5,7 @@ import javafx.scene.shape.Circle;
 
 public class Ball extends Circle {
 	
-	public static final int BALL_SPEED = 5;
+	public static final int BALL_SPEED = 7;
 	
 	private double dx, dy;
 	

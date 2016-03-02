@@ -192,6 +192,8 @@ public class Game {
 	
 	private void newGame() {
 		clicked = false;
+		this.timer.stop();
+		this.timeline.stop();
 		this.init();
 	}
 	
