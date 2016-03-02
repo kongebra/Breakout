@@ -22,6 +22,9 @@ public class Racket extends Rectangle {
 		if (ball.getDY() > 0) {
 			ball.reverseDY();
 		}
+		//x^2 + y^2 = 5^2
+		ball.setDX((ball.getCenterX() - getCenterX()) / getHalfWidth() * Ball.BALL_SPEED);
+		ball.setDY(-Math.sqrt((double)(Ball.BALL_SPEED * Ball.BALL_SPEED) - (ball.getDX() * ball.getDX())));
 	}
 	
 }
