@@ -59,6 +59,10 @@ public class Game {
 	private int score;
 	private Label scoreLabel;
 	
+	private int gameStartTimestamp;
+	private int seconds;
+	private Label secondsLabel;
+
 	private int fps;
 	private Label fpsLabel;
 	private Label engineMicroSecondsLabel;
@@ -117,6 +121,15 @@ public class Game {
 		scoreLabel.setFont(new Font(24));
 		scoreLabel.setLayoutX(5);
 		
+		// Seconds
+		secondsLabel = new Label("0");
+		secondsLabel.setTextFill(Color.WHITE);
+		secondsLabel.setFont(new Font(24));
+		secondsLabel.setLayoutY(height - 19);
+		secondsLabel.layoutXProperty().bind(secondsLabel.widthProperty().negate().add(width).subtract(15));
+		gameStartTimestamp = (int)(System.currentTimeMillis() / 1000L);
+		seconds = 0;
+		
 		// Frames pr second
 		fpsLabel = new Label("FPS: 0");
 		fpsLabel.setTextFill(Color.WHITE);
@@ -151,6 +164,7 @@ public class Game {
 		root.getChildren().add(newGameButton);
 		root.getChildren().add(livesLabel);
 		root.getChildren().add(scoreLabel);
+		root.getChildren().add(secondsLabel);
 		root.getChildren().add(fpsLabel);
 		root.getChildren().add(engineMicroSecondsLabel);
 		root.getChildren().add(drawMsLabel);
@@ -169,7 +183,11 @@ public class Game {
 				racket.setX(width - racket.getWidth());
 		});
 		root.setOnMouseClicked(e -> {
-			clicked = true;
+			if (!clicked)
+			{
+				clicked = true;
+				gameStartTimestamp = (int)(System.currentTimeMillis() / 1000L);
+			}
 		});
 		
 		// Styles
@@ -192,8 +210,10 @@ public class Game {
 				fps++;
 				long mainLoopStart = System.currentTimeMillis();
 				int fpsTimer = (int)(System.currentTimeMillis() / 1000L);
-				if (fpsTimer != lastFpsTimer)
+				if (clicked && fpsTimer != lastFpsTimer)
 				{
+					seconds = fpsTimer - gameStartTimestamp;
+					secondsLabel.setText("" + seconds);
 					fpsLabel.setText("FPS: " + fps);
 					fps = 0;
 					lastFpsTimer = fpsTimer;
@@ -265,6 +285,8 @@ public class Game {
 		timer.start();
 		ball.setCenterX(racket.getX() + racket.getHalfWidth());
 		ball.setCenterY(racket.getY() - racket.getHeight() * 1.2);
+		seconds = 0;
+		secondsLabel.setText("" + seconds);
 	}
 	
 	public void looseLife() {
