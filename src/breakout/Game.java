@@ -15,7 +15,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class Game {
-	
+
 	private final int BRICKS_PER_ROW = 15;
 	private final int ROW_OF_BRICKS = 10;
 	private final int PADDING = 50;
@@ -66,7 +66,7 @@ public class Game {
 	private long lastEngineStartNs;
 	private long lastEngineEnd;
 	private long lastEngineEndNs;
-
+        
 	public void init() {
 		
 		// Settings
@@ -123,7 +123,7 @@ public class Game {
 		lastEngineEndNs = 0;
 		
 		// Engine ms
-		engineMicroSecondsLabel = new Label("Engine �s: 0");
+		engineMicroSecondsLabel = new Label("Engine Âµs: 0");
 		engineMicroSecondsLabel.setTextFill(Color.WHITE);
 		engineMicroSecondsLabel.setFont(new Font(24));
 		engineMicroSecondsLabel.setLayoutX(400);
@@ -133,6 +133,9 @@ public class Game {
 		drawMsLabel.setTextFill(Color.WHITE);
 		drawMsLabel.setFont(new Font(24));
 		drawMsLabel.setLayoutX(600);
+                
+                
+                
 
 		// Add too ROOT
 		root.getChildren().add(racket);
@@ -187,7 +190,7 @@ public class Game {
 					fpsLabel.setText("FPS: " + fps);
 					fps = 0;
 					lastFpsTimer = fpsTimer;
-					engineMicroSecondsLabel.setText("Engine �s: " + ((lastEngineEndNs - lastEngineStartNs) / 1000L));
+					engineMicroSecondsLabel.setText("Engine Âµs: " + ((lastEngineEndNs - lastEngineStartNs) / 1000L));
 					drawMsLabel.setText("Draw ms: " + (mainLoopStart - lastEngineEnd));
 				}
 				lastEngineStartNs = System.nanoTime();
@@ -197,6 +200,8 @@ public class Game {
 				
 				if (ball.intersects(racket.getBoundsInLocal())) {
 					racket.bounceBall(ball);
+                                        ball.setRadius(ball.getRadius());
+                                      
 				}
 				
 				if (ball.lost()) {
@@ -214,7 +219,7 @@ public class Game {
 					/*
 					if (ball.intersects(brick.getBoundsInLocal())) {
 						
-						if (ball.getCenterY() - ball.getRadius() >= brick.getLayoutY() + brick.getHeight()) {
+						if (ball.getCenterY() - ball.getRadius() > brick.getLayoutY() + brick.getHeight()) {
 							ball.reverseDY();
 						} else if (ball.getCenterY() + ball.getRadius() < brick.getLayoutY()) {
 							ball.reverseDY();
@@ -253,8 +258,6 @@ public class Game {
 		timer.start();
 		ball.setCenterX(racket.getX() + racket.getHalfWidth());
 		ball.setCenterY(racket.getY() - racket.getHeight() * 1.2);
-		root.getChildren().removeAll(lives);
-		fixLives();
 	}
 	
 	public void looseLife() {
@@ -280,6 +283,11 @@ public class Game {
 				this.newGame();
 			});
 		}
+                
+                root.getChildren().removeAll(lives);
+                lives.clear();
+                fixLives();
+                root.getChildren().addAll(lives);
 	}
 	
 	private void initBricks() {
@@ -338,5 +346,4 @@ public class Game {
 	public static double getHeight() {
 		return height;
 	}
-	
 }
