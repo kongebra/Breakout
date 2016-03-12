@@ -3,14 +3,48 @@ package breakout;
 import javafx.scene.shape.Rectangle;
 
 public class Brick extends Rectangle {
+	//Assume bricks never extends 
+	private static int fastNegativeWidth = 0;
+	private static int fastNegativeHeight = 0;
+	private static int fastDoubleWidth = 0;
+	private static int fastDoubleHeight = 0;
 	
 	public Brick(double width, double height) {
 		super(width, height);
 	}
 	
-	// TODO: not working ?! or not using it right
+	public static void setFastCollDetArea(int width, int height, Ball ball)
+	{
+		int radius = (int)ball.getRadius();
+		fastNegativeWidth = -radius;
+		fastNegativeHeight = -radius;
+		fastDoubleWidth = width + radius;
+		fastDoubleHeight = height + radius;
+	}
+	
 	public boolean collision(Ball ball)
 	{
+		//Most of the time, ball is far away from brick. Perform a fast integer detection without extra addition.
+		int relativeX = (int)ball.getCenterX() - (int)this.getX();
+		if (relativeX < 0)
+		{
+			if (relativeX < fastNegativeWidth) return false; //Ball center is at least one radius left from brick
+		}
+		else
+		{
+			if (relativeX > fastDoubleWidth) return false; //Ball center is at least one radius right from brick
+		}
+		
+		int relativeY = (int)ball.getCenterY() - (int)this.getY();
+		if (relativeY < 0)
+		{
+			if (relativeY < fastNegativeHeight) return false; //Ball center is at least one radius above brick
+		}
+		else
+		{
+			if (relativeY > fastDoubleHeight) return false; //Ball center is at least one radius below brick
+		}
+
 		int ballX = (int)ball.getCenterX();
 		int ballY = (int)ball.getCenterY();
 		int ballR = (int)ball.getRadius();
