@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -80,7 +81,7 @@ public class Game {
 		// Racket
 		racket = new Racket(100, 10);
 		racket.setX((width / 2) - racket.getHalfWidth());
-		racket.setY(height - racket.getHeight() * 5);
+		racket.setY(height - racket.getHeight() * 6);
 		
 		// Ball
 		ball = new Ball(10);
@@ -92,9 +93,14 @@ public class Game {
 		initBricks();
 		Brick.setFastCollDetArea((int)brickWidth, (int)brickHeight, ball);
 		
+		// Bottom line
+		Line bottomLine = new Line(10, height - 25, width - 10, height - 25);
+		bottomLine.setStrokeWidth(2);
+		bottomLine.setStroke(Color.WHITE);
+		
 		// Buttons
 		newGameButton = new Button("New Game");
-		newGameButton.setLayoutY(3);
+		newGameButton.setLayoutY(height - 20);
 		newGameButton.setLayoutX(width / 2 - 50);
 		newGameButton.setOnAction(e -> {
 			this.newGame();
@@ -141,6 +147,7 @@ public class Game {
 		root.getChildren().add(racket);
 		root.getChildren().add(ball);
 		root.getChildren().addAll(bricks);
+		root.getChildren().addAll(bottomLine);
 		root.getChildren().add(newGameButton);
 		root.getChildren().add(livesLabel);
 		root.getChildren().add(scoreLabel);
