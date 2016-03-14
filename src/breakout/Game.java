@@ -1,6 +1,7 @@
 package breakout;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import javafx.animation.AnimationTimer;
 import javafx.animation.Timeline;
@@ -10,11 +11,12 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class Game {
-	
+
 	private final int BRICKS_PER_ROW = 15;
 	private final int ROW_OF_BRICKS = 10;
 	private final int PADDING = 50;
@@ -57,6 +59,19 @@ public class Game {
 	private int score;
 	private Label scoreLabel;
 	
+	private int gameStartTimestamp;
+	private int seconds;
+	private Label secondsLabel;
+
+	private int fps;
+	private Label fpsLabel;
+	private Label engineMicroSecondsLabel;
+	private Label drawMsLabel;
+	private int lastFpsTimer;
+	private long lastEngineStartNs;
+	private long lastEngineEnd;
+	private long lastEngineEndNs;
+        
 	public void init() {
 		
 		// Settings
@@ -70,7 +85,7 @@ public class Game {
 		// Racket
 		racket = new Racket(100, 10);
 		racket.setX((width / 2) - racket.getHalfWidth());
-		racket.setY(height - racket.getHeight() * 5);
+		racket.setY(height - racket.getHeight() * 6);
 		
 		// Ball
 		ball = new Ball(10);
@@ -80,10 +95,16 @@ public class Game {
 		// Bricks
 		bricks = new ArrayList<Brick>();
 		initBricks();
+		Brick.setFastCollDetArea((int)brickWidth, (int)brickHeight, ball);
+		
+		// Bottom line
+		Line bottomLine = new Line(10, height - 25, width - 10, height - 25);
+		bottomLine.setStrokeWidth(2);
+		bottomLine.setStroke(Color.WHITE);
 		
 		// Buttons
 		newGameButton = new Button("New Game");
-		newGameButton.setLayoutY(3);
+		newGameButton.setLayoutY(height - 20);
 		newGameButton.setLayoutX(width / 2 - 50);
 		newGameButton.setOnAction(e -> {
 			this.newGame();
@@ -100,13 +121,53 @@ public class Game {
 		scoreLabel.setFont(new Font(24));
 		scoreLabel.setLayoutX(5);
 		
+		// Seconds
+		secondsLabel = new Label("0");
+		secondsLabel.setTextFill(Color.WHITE);
+		secondsLabel.setFont(new Font(24));
+		secondsLabel.setLayoutY(height - 19);
+		secondsLabel.layoutXProperty().bind(secondsLabel.widthProperty().negate().add(width).subtract(15));
+		gameStartTimestamp = (int)(System.currentTimeMillis() / 1000L);
+		seconds = 0;
+		
+		// Frames pr second
+		fpsLabel = new Label("FPS: 0");
+		fpsLabel.setTextFill(Color.WHITE);
+		fpsLabel.setFont(new Font(24));
+		fpsLabel.setLayoutX(200);
+		fps = 0;
+		lastFpsTimer = 0;
+		lastEngineStartNs = 0;
+		lastEngineEnd = 0;
+		lastEngineEndNs = 0;
+		
+		// Engine ms
+		engineMicroSecondsLabel = new Label("Engine Âµs: 0");
+		engineMicroSecondsLabel.setTextFill(Color.WHITE);
+		engineMicroSecondsLabel.setFont(new Font(24));
+		engineMicroSecondsLabel.setLayoutX(400);
+		
+		// Draw ms
+		drawMsLabel = new Label("Draw ms: 0");
+		drawMsLabel.setTextFill(Color.WHITE);
+		drawMsLabel.setFont(new Font(24));
+		drawMsLabel.setLayoutX(600);
+                
+                
+                
+
 		// Add too ROOT
 		root.getChildren().add(racket);
 		root.getChildren().add(ball);
 		root.getChildren().addAll(bricks);
+		root.getChildren().addAll(bottomLine);
 		root.getChildren().add(newGameButton);
 		root.getChildren().add(livesLabel);
 		root.getChildren().add(scoreLabel);
+		root.getChildren().add(secondsLabel);
+		root.getChildren().add(fpsLabel);
+		root.getChildren().add(engineMicroSecondsLabel);
+		root.getChildren().add(drawMsLabel);
 		root.getChildren().addAll(lives);
 		
 		// ActionEvents
@@ -122,7 +183,11 @@ public class Game {
 				racket.setX(width - racket.getWidth());
 		});
 		root.setOnMouseClicked(e -> {
-			clicked = true;
+			if (!clicked)
+			{
+				clicked = true;
+				gameStartTimestamp = (int)(System.currentTimeMillis() / 1000L);
+			}
 		});
 		
 		// Styles
@@ -142,12 +207,28 @@ public class Game {
 		timer = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
+				fps++;
+				long mainLoopStart = System.currentTimeMillis();
+				int fpsTimer = (int)(System.currentTimeMillis() / 1000L);
+				if (clicked && fpsTimer != lastFpsTimer)
+				{
+					seconds = fpsTimer - gameStartTimestamp;
+					secondsLabel.setText("" + seconds);
+					fpsLabel.setText("FPS: " + fps);
+					fps = 0;
+					lastFpsTimer = fpsTimer;
+					engineMicroSecondsLabel.setText("Engine Âµs: " + ((lastEngineEndNs - lastEngineStartNs) / 1000L));
+					drawMsLabel.setText("Draw ms: " + (mainLoopStart - lastEngineEnd));
+				}
+				lastEngineStartNs = System.nanoTime();
 				if (clicked) {
 					ball.move();
 				}
 				
 				if (ball.intersects(racket.getBoundsInLocal())) {
 					racket.bounceBall(ball);
+                                        ball.setRadius(ball.getRadius());
+                                      
 				}
 				
 				if (ball.lost()) {
@@ -165,7 +246,7 @@ public class Game {
 					/*
 					if (ball.intersects(brick.getBoundsInLocal())) {
 						
-						if (ball.getCenterY() - ball.getRadius() >= brick.getLayoutY() + brick.getHeight()) {
+						if (ball.getCenterY() - ball.getRadius() > brick.getLayoutY() + brick.getHeight()) {
 							ball.reverseDY();
 						} else if (ball.getCenterY() + ball.getRadius() < brick.getLayoutY()) {
 							ball.reverseDY();
@@ -182,7 +263,8 @@ public class Game {
 					}
 					*/
 				}
-				
+				lastEngineEnd = System.currentTimeMillis();
+				lastEngineEndNs = System.nanoTime();
 			}
 		};
 		
@@ -192,6 +274,8 @@ public class Game {
 	
 	private void newGame() {
 		clicked = false;
+		this.timer.stop();
+		this.timeline.stop();
 		this.init();
 	}
 	
@@ -201,8 +285,8 @@ public class Game {
 		timer.start();
 		ball.setCenterX(racket.getX() + racket.getHalfWidth());
 		ball.setCenterY(racket.getY() - racket.getHeight() * 1.2);
-		root.getChildren().removeAll(lives);
-		fixLives();
+		seconds = 0;
+		secondsLabel.setText("" + seconds);
 	}
 	
 	public void looseLife() {
@@ -228,6 +312,11 @@ public class Game {
 				this.newGame();
 			});
 		}
+                
+                root.getChildren().removeAll(lives);
+                lives.clear();
+                fixLives();
+                root.getChildren().addAll(lives);
 	}
 	
 	private void initBricks() {
@@ -286,5 +375,4 @@ public class Game {
 	public static double getHeight() {
 		return height;
 	}
-	
 }

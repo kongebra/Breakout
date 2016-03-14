@@ -4,6 +4,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 public class Ball extends Circle {
+
+public static final int BALL_SPEED = 7;
 	
 	private double dx, dy;
 	
@@ -51,6 +53,10 @@ public class Ball extends Circle {
 	
 	public double getDX() {
 		return dx;
+	}
+	
+	public void setDX(double dx) {
+		this.dx = dx;
 	}
 	
 }
