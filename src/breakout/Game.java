@@ -64,14 +64,7 @@ public class Game {
 	private int seconds;
 	private Label secondsLabel;
 
-//	private int fps;
-//	private Label fpsLabel;
-//	private Label engineMicroSecondsLabel;
-//	private Label drawMsLabel;
 	private int lastFpsTimer;
-//	private long lastEngineStartNs;
-//	private long lastEngineEnd;
-//	private long lastEngineEndNs;
 	
 	private ArrayList<Button> levelButtons;
         
@@ -110,13 +103,9 @@ public class Game {
 			this.newGame(ballSpeed);
 		});
 		
-		
 		levelButtons = new ArrayList<Button>();
-		for (int i = 1; i <= 3; i++) {
-			levelButtons.add(new Button("Level " + i));
-		}
-		
 		for (int i = 0; i < 3; i++) {
+			levelButtons.add(new Button("Level " + (i + 1)));
 			levelButtons.get(i).setLayoutX(width - (64*3 + 5) + i * 64);
 			levelButtons.get(i).setLayoutY(height - 30);
 			int speed = i;
@@ -124,8 +113,6 @@ public class Game {
 				newGame(7 + 2 * speed);
 			});
 		}
-		
-		
 		
 		// Lives
 		lives = new ArrayList<Circle>();
@@ -147,28 +134,7 @@ public class Game {
 		gameStartTimestamp = (int)(System.currentTimeMillis() / 1000L);
 		seconds = 0;
 		
-		// Frames pr second
-//		fpsLabel = new Label("FPS: 0");
-//		fpsLabel.setTextFill(Color.WHITE);
-//		fpsLabel.setFont(new Font(24));
-//		fpsLabel.setLayoutX(200);
-//		fps = 0;
 		lastFpsTimer = 0;
-//		lastEngineStartNs = 0;
-//		lastEngineEnd = 0;
-//		lastEngineEndNs = 0;
-		
-		// Engine ms
-//		engineMicroSecondsLabel = new Label("Engine µs: 0");
-//		engineMicroSecondsLabel.setTextFill(Color.WHITE);
-//		engineMicroSecondsLabel.setFont(new Font(24));
-//		engineMicroSecondsLabel.setLayoutX(400);
-		
-		// Draw ms
-//		drawMsLabel = new Label("Draw ms: 0");
-//		drawMsLabel.setTextFill(Color.WHITE);
-//		drawMsLabel.setFont(new Font(24));
-//		drawMsLabel.setLayoutX(600);
 
 		// Add too ROOT
 		root.getChildren().add(racket);
@@ -178,9 +144,6 @@ public class Game {
 		root.getChildren().add(livesLabel);
 		root.getChildren().add(scoreLabel);
 		root.getChildren().add(secondsLabel);
-//		root.getChildren().add(fpsLabel);
-//		root.getChildren().add(engineMicroSecondsLabel);
-//		root.getChildren().add(drawMsLabel);
 		root.getChildren().addAll(levelButtons);
 		root.getChildren().addAll(lives);
 		
@@ -221,19 +184,12 @@ public class Game {
 		timer = new AnimationTimer() {
 			@Override
 			public void handle(long now) {
-//				fps++;
-//				long mainLoopStart = System.currentTimeMillis();
 				int fpsTimer = (int)(System.currentTimeMillis() / 1000L);
 				if (clicked && fpsTimer != lastFpsTimer) {
 					seconds = fpsTimer - gameStartTimestamp;
 					secondsLabel.setText("" + seconds);
-//					fpsLabel.setText("FPS: " + fps);
-//					fps = 0;
 					lastFpsTimer = fpsTimer;
-//					engineMicroSecondsLabel.setText("Engine µs: " + ((lastEngineEndNs - lastEngineStartNs) / 1000L));
-//					drawMsLabel.setText("Draw ms: " + (mainLoopStart - lastEngineEnd));
 				}
-//				lastEngineStartNs = System.nanoTime();
 				if (clicked) {
 					ball.move();
 				}
@@ -256,28 +212,7 @@ public class Game {
 						score++;
 						scoreLabel.setText("Score: " + score);
 					}
-					/*
-					if (ball.intersects(brick.getBoundsInLocal())) {
-						
-						if (ball.getCenterY() - ball.getRadius() > brick.getLayoutY() + brick.getHeight()) {
-							ball.reverseDY();
-						} else if (ball.getCenterY() + ball.getRadius() < brick.getLayoutY()) {
-							ball.reverseDY();
-						} else if (ball.getCenterX() + ball.getRadius() < brick.getLayoutX()) {
-							ball.reverseDX();
-						} else if (ball.getCenterX() - ball.getRadius() >= brick.getLayoutX() + brick.getWidth()) {
-							ball.reverseDX();
-						}
-						
-						root.getChildren().remove(brick);
-						brick.setX(-100);
-						score++;
-						scoreLabel.setText("Score: " + score);
-					}
-					*/
 				}
-//				lastEngineEnd = System.currentTimeMillis();
-//				lastEngineEndNs = System.nanoTime();
 			}
 		};
 		
@@ -395,5 +330,4 @@ public class Game {
 		}
 		newGameButton.setVisible(value);
 	}
-
 }
