@@ -211,10 +211,10 @@ public class Game {
 		root.setStyle("-fx-background-color: #000000;");
 		
 		// Stage setup
-		stage.setScene(scene);
 		stage.setTitle(title);
 		stage.setResizable(false);
 		stage.show();
+		stage.setScene(scene);
 		
 		timeline = new Timeline();
 		timeline.setCycleCount(Timeline.INDEFINITE);
