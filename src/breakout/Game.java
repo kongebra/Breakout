@@ -258,7 +258,6 @@ public class Game {
 						brick.setX(-100);
 						score++;
 						scoreLabel.setText("Score: " + score);
-						break;
 					}
 					/*
 					if (ball.intersects(brick.getBoundsInLocal())) {
