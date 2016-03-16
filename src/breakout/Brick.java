@@ -27,6 +27,7 @@ public class Brick extends Rectangle {
 		public boolean collision(Ball ball)
 		{
 			//Most of the time, ball is far away from brick. Perform a fast integer detection without extra addition.
+			//All bricks are equal. Square vs square
 			int relativeX = (int)ball.getCenterX() - (int)this.getX();
 			if (relativeX < 0)
 			{
@@ -46,23 +47,15 @@ public class Brick extends Rectangle {
 			{
 				if (relativeY > fastDoubleHeight) return false; //Ball center is at least one radius below brick
 			}
-
+			
 			int ballX = (int)ball.getCenterX();
 			int ballY = (int)ball.getCenterY();
-			int ballR = (int)ball.getRadius();
 			int rectLeft = (int)this.getX();
 			int rectRight = rectLeft + (int)this.getWidth();
 			int rectTop = (int)this.getY();
 			int rectBottom = rectTop + (int)this.getHeight();
 			int rectWidth = (int)this.getWidth();
 			int rectHeight = (int)this.getHeight();
-			
-			//Quick detection (square vs square)
-			if (ballX + ballR < rectLeft
-					|| ballX - ballR > rectRight
-					|| ballY + ballR < rectTop
-					|| ballY - ballR > rectBottom)
-				return false;
 			
 			//Brick center Y:
 			if (relativeY >= 0 && relativeY <= rectHeight)
