@@ -102,11 +102,6 @@ public class Game {
 		initBricks();
 		Brick.setFastCollDetArea((int)brickWidth, (int)brickHeight, ball);
 		
-		// Bottom line
-		Line bottomLine = new Line(10, height - 35, width - 10, height - 35);
-		bottomLine.setStrokeWidth(2);
-		bottomLine.setStroke(Color.WHITE);
-		
 		// Buttons
 		newGameButton = new Button("New Game");
 		newGameButton.setLayoutY(height - 30);
@@ -179,7 +174,6 @@ public class Game {
 		root.getChildren().add(racket);
 		root.getChildren().add(ball);
 		root.getChildren().addAll(bricks);
-		root.getChildren().addAll(bottomLine);
 		root.getChildren().add(newGameButton);
 		root.getChildren().add(livesLabel);
 		root.getChildren().add(scoreLabel);
@@ -206,6 +200,7 @@ public class Game {
 			if (!clicked) {
 				clicked = true;
 				gameStartTimestamp = (int)(System.currentTimeMillis() / 1000L);
+				setButtonsVisible(false);
 			}
 		});
 		
@@ -334,6 +329,7 @@ public class Game {
         lives.clear();
         fixLives();
         root.getChildren().addAll(lives);
+        setButtonsVisible(true);
 	}
 	
 	private void initBricks() {
@@ -392,4 +388,12 @@ public class Game {
 	public static double getHeight() {
 		return height;
 	}
+	
+	private void setButtonsVisible(boolean value) {
+		for (int i = 0; i < 3; i++) {
+			levelButtons.get(i).setVisible(value);
+		}
+		newGameButton.setVisible(value);
+	}
+
 }
