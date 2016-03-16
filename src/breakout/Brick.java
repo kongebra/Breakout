@@ -50,6 +50,7 @@ public class Brick extends Rectangle {
 			
 			int ballX = (int)ball.getCenterX();
 			int ballY = (int)ball.getCenterY();
+			int ballR = (int)ball.getRadius();
 			int rectLeft = (int)this.getX();
 			int rectRight = rectLeft + (int)this.getWidth();
 			int rectTop = (int)this.getY();
@@ -57,27 +58,43 @@ public class Brick extends Rectangle {
 			int rectWidth = (int)this.getWidth();
 			int rectHeight = (int)this.getHeight();
 			
+			//Closest corner on brick
+			int closestX = ballX < rectLeft ? rectLeft : rectRight;
+			int closestY = ballY < rectTop ? rectTop : rectBottom;
+			
 			//Brick center Y:
 			if (relativeY >= 0 && relativeY <= rectHeight)
 			{
-				double sign = 1;
-				if (relativeX < rectWidth / 2) sign = -1;
-				ball.setDX(Math.abs(ball.getDX()) * sign);
-				return true;
+				//If mostly Y movement, treat as corner if last X position would be inside
+				int relativeLastX = ball.getLastX() - (int)this.getX();
+				if (!ball.contains(closestX, closestY) || //Ensure corner is inside
+						relativeLastX < -ballR ||
+						relativeLastX > rectWidth + ballR)
+				{
+					double sign = 1;
+					if (relativeX < rectWidth / 2) sign = -1;
+					ball.setDX(Math.abs(ball.getDX()) * sign);
+					return true;
+				}
 			}
 			//Brick center X:
 			if (relativeX >= 0 && relativeX <= rectWidth)
 			{
-				double sign = 1;
-				if (relativeY < rectHeight / 2) sign = -1;
-				ball.setDY(Math.abs(ball.getDY()) * sign);
-				return true;
+				//If mostly X movement, treat as corner if last Y position would be inside
+				int relativeLastY = ball.getLastY() - (int)this.getY();
+				if (!ball.contains(closestX, closestY) || //Ensure corner is inside
+						relativeLastY < -ballR ||
+						relativeLastY > rectHeight + ballR)
+				{
+					double sign = 1;
+					if (relativeY < rectHeight / 2) sign = -1;
+					ball.setDY(Math.abs(ball.getDY()) * sign);
+					return true;
+				}
 			}
 			//Brick corner
 			//New direction must be in corner direction
 			
-			int closestX = ballX < rectLeft ? rectLeft : rectRight;
-			int closestY = ballY < rectTop ? rectTop : rectBottom;
 			if (ball.contains(closestX, closestY))
 			{
 				//Compare sign on direction and relative position
