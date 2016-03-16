@@ -19,6 +19,7 @@ public class Game {
 	private final int BRICKS_PER_ROW = 15;
 	private final int ROW_OF_BRICKS = 10;
 	private final int PADDING = 50;
+	private final int INITIAL_LIVES = 3;
 	
 	private static double width;
 	private static double height;
@@ -27,7 +28,7 @@ public class Game {
 	private String title;
 	private boolean clicked;
 	
-	private int livesLeft = 3;
+	private int livesLeft;
 	
 	public Game(String title, double width, double height, Stage stage) {
 		this.title = title;
@@ -79,6 +80,7 @@ public class Game {
 		// Settings
 		clicked = false;
 		score = 0;
+		livesLeft = INITIAL_LIVES;
 		this.ballSpeed = ballSpeed;
 		
 		// Scene settings
@@ -324,7 +326,6 @@ public class Game {
 			btn.setLayoutY(height / 2 - btn.getHeight() / 2);
 			root.getChildren().add(btn);
 			btn.setOnAction(e -> {
-				this.livesLeft = 3;
 				this.newGame(ballSpeed);
 			});
 		}
