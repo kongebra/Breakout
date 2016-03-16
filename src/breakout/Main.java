@@ -11,7 +11,7 @@ private Game game;
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		game = new Game("Breakout", 800, 600, primaryStage);
-		game.init();
+		game.init(7);
 	}
 	
 	public static void main(String[] args) {

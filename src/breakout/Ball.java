@@ -5,14 +5,23 @@ import javafx.scene.shape.Circle;
 
 public class Ball extends Circle {
 
-public static final int BALL_SPEED = 7;
-	
 	private double dx, dy;
+	
+	private double ballSpeed;
 	
 	public Ball(double radius) {
 		super(radius);
 		dx = 4;
 		dy = 4;
+		ballSpeed = 7.0;
+		this.setFill(Color.WHITE);
+	}
+	
+	public Ball(double radius, double speed) {
+		super(radius);
+		dx = speed;
+		dy = speed;
+		ballSpeed = speed;
 		this.setFill(Color.WHITE);
 	}
 	
@@ -57,6 +66,15 @@ public static final int BALL_SPEED = 7;
 	
 	public void setDX(double dx) {
 		this.dx = dx;
+	}
+	
+	public void setSpeed(double speed) {
+		dx = speed;
+		dy = speed;
+	}
+	
+	public double getBallSpeed() {
+		return ballSpeed;
 	}
 	
 }
