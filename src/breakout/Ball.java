@@ -71,8 +71,7 @@ public class Ball extends Circle {
 	}
 	
 	public void setSpeed(double speed) {
-		dx = speed;
-		dy = speed;
+		ballSpeed = speed;
 	}
 	
 	public double getBallSpeed() {
