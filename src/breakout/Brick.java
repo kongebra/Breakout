@@ -54,6 +54,8 @@ public class Brick extends Rectangle {
 			int rectRight = rectLeft + (int)this.getWidth();
 			int rectTop = (int)this.getY();
 			int rectBottom = rectTop + (int)this.getHeight();
+			int rectWidth = (int)this.getWidth();
+			int rectHeight = (int)this.getHeight();
 			
 			//Quick detection (square vs square)
 			if (ballX + ballR < rectLeft
@@ -63,15 +65,19 @@ public class Brick extends Rectangle {
 				return false;
 			
 			//Brick center Y:
-			if (ballY >= rectTop && ballY <= rectBottom)
+			if (relativeY >= 0 && relativeY <= rectHeight)
 			{
-				ball.reverseDX();
+				double sign = 1;
+				if (relativeX < rectWidth / 2) sign = -1;
+				ball.setDX(Math.abs(ball.getDX()) * sign);
 				return true;
 			}
 			//Brick center X:
-			if (ballX >= rectLeft && ballX <= rectRight)
+			if (relativeX >= 0 && relativeX <= rectWidth)
 			{
-				ball.reverseDY();
+				double sign = 1;
+				if (relativeY < rectHeight / 2) sign = -1;
+				ball.setDY(Math.abs(ball.getDY()) * sign);
 				return true;
 			}
 			//Brick corner
