@@ -6,6 +6,7 @@ import javafx.scene.shape.Circle;
 public class Ball extends Circle {
 
 	private double dx, dy;
+	private int lastX, lastY;
 	
 	private double ballSpeed;
 	
@@ -14,6 +15,7 @@ public class Ball extends Circle {
 		dx = 4;
 		dy = 4;
 		ballSpeed = 7.0;
+		lastX = lastY = 0;
 		this.setFill(Color.WHITE);
 	}
 	
@@ -22,18 +24,26 @@ public class Ball extends Circle {
 		dx = speed;
 		dy = speed;
 		ballSpeed = speed;
+		lastX = lastY = 0;
 		this.setFill(Color.WHITE);
 	}
 	
 	public void move() {
+		lastX = (int)this.getCenterX();
+		lastY = (int)this.getCenterY();
 		this.setCenterX(this.getCenterX() + dx);
 		this.setCenterY(this.getCenterY() + dy);
 		
-		if (this.getCenterX() - this.getRadius() <= 0 || this.getCenterX() >= Game.getWidth() - this.getRadius()) {
-			reverseDX();
+		if (this.getCenterX() - this.getRadius() <= 0) {
+			setDX(Math.abs(getDX()));
 		}
+		
+		if (this.getCenterX() >= Game.getWidth() - this.getRadius()) {
+			setDX(-Math.abs(getDX()));
+		}
+		
 		if (this.getCenterY() - this.getRadius() <= 0) {
-			reverseDY();
+			setDY(Math.abs(getDY()));
 		}
 	}
 	
@@ -69,12 +79,19 @@ public class Ball extends Circle {
 	}
 	
 	public void setSpeed(double speed) {
-		dx = speed;
-		dy = speed;
+		ballSpeed = speed;
 	}
 	
 	public double getBallSpeed() {
 		return ballSpeed;
+	}
+	
+	public int getLastX() {
+		return lastX;
+	}
+	
+	public int getLastY() {
+		return lastY;
 	}
 	
 }
