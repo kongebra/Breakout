@@ -58,6 +58,8 @@ public class Game {
 	
 	private int score;
 	private Label scoreLabel;
+	private int maxScore;
+	private Label gameCompleteLabel;
 	
 	private int gameStartTimestamp;
 	private int seconds;
@@ -123,6 +125,14 @@ public class Game {
 		scoreLabel.setTextFill(Color.WHITE);
 		scoreLabel.setFont(new Font(24));
 		scoreLabel.setLayoutX(width / 2 - 75);
+		
+		// Game Complete
+		maxScore = (int) (BRICKS_PER_ROW * ROW_OF_BRICKS * 0.8); // Console: 120 (5/7 perfect score!)
+		gameCompleteLabel = new Label();
+		gameCompleteLabel.setLayoutX(100);
+		gameCompleteLabel.setLayoutY(height / 4);
+		gameCompleteLabel.setFont(new Font(32));
+		gameCompleteLabel.setTextFill(Color.WHITE);
 		
 		// Seconds
 		secondsLabel = new Label("0");
@@ -209,6 +219,16 @@ public class Game {
 						score++;
 						scoreLabel.setText("Score: " + score);
 					}
+				}
+				
+				if (score >= maxScore) {
+					// Game Complete!
+					setButtonsVisible(true);
+					gameCompleteLabel.setText("You completed the game in " + seconds + " seconds!");
+					//root.getChildren().add(newGameButton);
+					root.getChildren().add(gameCompleteLabel);
+					timeline.stop();
+					timer.stop();
 				}
 			}
 		};
