@@ -34,14 +34,17 @@ public class Ball extends Circle {
 		this.setCenterX(this.getCenterX() + dx);
 		this.setCenterY(this.getCenterY() + dy);
 		
-		if (this.getCenterX() - this.getRadius() <= 0)
+		if (this.getCenterX() - this.getRadius() <= 0) {
 			setDX(Math.abs(getDX()));
+		}
 		
-		if (this.getCenterX() >= Game.getWidth() - this.getRadius())
+		if (this.getCenterX() >= Game.getWidth() - this.getRadius()) {
 			setDX(-Math.abs(getDX()));
+		}
 		
-		if (this.getCenterY() - this.getRadius() <= 0)
+		if (this.getCenterY() - this.getRadius() <= 0) {
 			setDY(Math.abs(getDY()));
+		}
 	}
 	
 	public boolean lost() {

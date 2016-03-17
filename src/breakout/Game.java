@@ -10,7 +10,6 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -197,8 +196,6 @@ public class Game {
 				if (ball.intersects(racket.getBoundsInLocal())) {
 					racket.bounceBall(ball);
                     ball.setRadius(ball.getRadius());
-                    // (Svein): brukt for debug
-                    // System.out.println("DX: " + ball.getDX() + " - DY: " + ball.getDY());
 				}
 				
 				if (ball.lost()) {
