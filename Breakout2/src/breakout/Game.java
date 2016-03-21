@@ -339,6 +339,8 @@ public class Game {
 		
 	}
 	
+	
+	
 	public static double getWidth() {
 		return width;
 	}
