@@ -284,6 +284,7 @@ public class Game {
         setButtonsVisible(true);
 	}
 	
+	
 	private void initBricks() {
 		for (int i = 0; i < BRICKS_PER_ROW * ROW_OF_BRICKS; i++)
 			bricks.add(new Brick(brickWidth, brickHeight));
