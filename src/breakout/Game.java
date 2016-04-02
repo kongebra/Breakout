@@ -69,6 +69,7 @@ public class Game {
 
 	private int gameStartTimestamp;
 	private int seconds;
+	private int totalSeconds;
 	private Label secondsLabel;
 
 	private int lastFpsTimer;
@@ -151,6 +152,7 @@ public class Game {
 		secondsLabel.layoutXProperty().bind(secondsLabel.widthProperty().negate().add(width).subtract(15));
 		gameStartTimestamp = (int) (System.currentTimeMillis() / 1000L);
 		seconds = 0;
+		totalSeconds = 0;
 
 		lastFpsTimer = 0;
 
@@ -205,7 +207,7 @@ public class Game {
 				int fpsTimer = (int) (System.currentTimeMillis() / 1000L);
 				if (clicked && fpsTimer != lastFpsTimer) {
 					seconds = fpsTimer - gameStartTimestamp;
-					secondsLabel.setText("" + seconds);
+					secondsLabel.setText("" + (totalSeconds + seconds));
 					lastFpsTimer = fpsTimer;
 				}
 				if (clicked) {
@@ -233,7 +235,7 @@ public class Game {
 				if (score >= maxScore) {
 					// Game Complete!
 					setButtonsVisible(true);
-					gameCompleteLabel.setText("You completed the game in " + seconds + " seconds!");
+					gameCompleteLabel.setText("You completed the game in " + totalSeconds + " seconds!");
 					// root.getChildren().add(newGameButton);
 					root.getChildren().add(gameCompleteLabel);
 					timeline.stop();
@@ -259,8 +261,9 @@ public class Game {
 		timer.start();
 		ball.setCenterX(racket.getX() + racket.getHalfWidth());
 		ball.setCenterY(racket.getY() - racket.getHeight() * 1.2);
+		totalSeconds += seconds;
 		seconds = 0;
-		secondsLabel.setText("" + seconds);
+		secondsLabel.setText("" + (totalSeconds + seconds));
 	}
 
 	public void looseLife() {
