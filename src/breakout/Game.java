@@ -234,10 +234,7 @@ public class Game {
 
 				if (score >= maxScore) {
 					// Game Complete!
-					if (totalSeconds == 0) {
-						totalSeconds = seconds;
-					}
-					
+					totalSeconds += seconds;
 					setButtonsVisible(true);
 					gameCompleteLabel.setText("You completed the game in " + totalSeconds + " seconds!");
 					// root.getChildren().add(newGameButton);
